@@ -81,16 +81,16 @@ def get_data(symbol, interval, start, limit, write_data=True):
     df.drop_duplicates(subset=['timestamp'], keep='last', inplace=True)
 
     if write_data:
-        df.to_csv(f'data/crypto/{symbol}.csv')
+        df.to_csv(file_path)
         print(f'File {file_path} has been successfully saved.')
 
     return df
 
 
-symbol = 'DOGEUSDT'
-interval = 'd' # In minutes
+symbol = 'ETHUSDT'
+interval = '15' # In minutes
 limit = 1000
-start = int(dt.datetime(2024, 1, 1).timestamp() * 1000)
+start = int(dt.datetime(2020, 1, 1).timestamp() * 1000)
 
 get_data(symbol, interval, start, limit, write_data=True)
 
