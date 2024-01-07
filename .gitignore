@@ -4,4 +4,4 @@
 */.ipynb_checkpoints/*
 credentials.json
 
-data/crypto/*
+data/crypto/*.csv
