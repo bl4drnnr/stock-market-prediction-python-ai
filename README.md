@@ -1,1 +1,3 @@
-# stock-market-prediction-python-ai
+<h1 align="center">
+    Stock Markets Prediction with Python AI
+</h1>
