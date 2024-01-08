@@ -49,45 +49,48 @@ def format_data(response):
 
 
 def get_data(symbol, interval, start, limit, write_data=True):
-    file_path = f'data/crypto/{symbol}.csv'
+    try:
+        file_path = f'data/crypto/{symbol}.csv'
 
-    df = pd.DataFrame() if not os.path.exists(file_path) else pd.read_csv(file_path, index_col=0, parse_dates=True)
-    
-    while True:
-        # https://bybit-exchange.github.io/docs/v5/market/kline
-        response = session.get_kline(
-            category='linear', 
-            symbol=symbol, 
-            start=start,
-            interval=interval,
-            limit=limit
-        )
+        df = pd.DataFrame() if not os.path.exists(file_path) else pd.read_csv(file_path, index_col=0, parse_dates=True)
         
-        latest = format_data(response)
+        while True:
+            # https://bybit-exchange.github.io/docs/v5/market/kline
+            response = session.get_kline(
+                category='linear', 
+                symbol=symbol, 
+                start=start,
+                interval=interval,
+                limit=limit
+            )
+            
+            latest = format_data(response)
+            
+            if not isinstance(latest, pd.DataFrame):
+                break
+            
+            start = get_last_timestamp(latest)
+            
+            time.sleep(0.5)
+            
+            df = pd.concat([df, latest])
+            
+            print(f'Collecting data from: {dt.datetime.fromtimestamp(start / 1000)}')
+            
+            if len(latest) == 1: break
         
-        if not isinstance(latest, pd.DataFrame):
-            break
-        
-        start = get_last_timestamp(latest)
-        
-        time.sleep(0.5)
-        
-        df = pd.concat([df, latest])
-        
-        print(f'Collecting data from: {dt.datetime.fromtimestamp(start / 1000)}')
-        
-        if len(latest) == 1: break
-    
-    df.drop_duplicates(subset=['timestamp'], keep='last', inplace=True)
+        df.drop_duplicates(subset=['timestamp'], keep='last', inplace=True)
 
-    if write_data:
-        df.to_csv(file_path)
-        print(f'File {file_path} has been successfully saved.')
+        if write_data:
+            df.to_csv(file_path)
+            print(f'File {file_path} has been successfully saved.')
 
-    return df
+        return df
+    except Exception as e:
+        print(e)
 
 
-symbol = 'ETHUSDT'
+symbol = 'DOGEUSDT'
 interval = '15' # In minutes
 limit = 1000
 start = int(dt.datetime(2020, 1, 1).timestamp() * 1000)
