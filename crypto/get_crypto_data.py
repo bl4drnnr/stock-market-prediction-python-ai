@@ -90,8 +90,8 @@ def get_data(symbol, interval, start, limit, write_data=True):
         print(e)
 
 
-symbol = 'DOGEUSDT'
-interval = '15' # In minutes
+symbol = 'BTCUSDT'
+interval = 'D' # In minutes
 limit = 1000
 start = int(dt.datetime(2020, 1, 1).timestamp() * 1000)
 
